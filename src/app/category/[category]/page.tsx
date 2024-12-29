@@ -16,14 +16,14 @@ interface Post {
   publishedAt?: string;
 }
 
-// Interface for the fetched data
-interface CategoryPageData {
-  categoryData: Category | null;
-  posts: Post[];
+interface CategoryPageProps {
+  params: {
+    category: string;
+  };
 }
 
-// Fetch category data and posts for the page
-const fetchCategoryData = async (categorySlug: string): Promise<CategoryPageData> => {
+// Fetch data function
+const fetchCategoryData = async (categorySlug: string) => {
   const categoryQuery = `*[_type == "category" && slug.current == $categorySlug][0]{
     _id,
     title
@@ -49,12 +49,6 @@ const fetchCategoryData = async (categorySlug: string): Promise<CategoryPageData
 
   return { categoryData, posts };
 };
-
-interface CategoryPageProps {
-  params: {
-    category: string;
-  };
-}
 
 const CategoryPage = async ({ params }: CategoryPageProps) => {
   const { category: categorySlug } = params;
