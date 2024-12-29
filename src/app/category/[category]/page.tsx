@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+// src/app/category/[category]/page.tsx
 import { client } from '../../../sanity/lib/client';
 import Link from 'next/link';
 
@@ -16,7 +16,36 @@ interface Post {
   publishedAt?: string;
 }
 
-const CategoryPage = ({ categoryData, posts }: { categoryData: Category | null, posts: Post[] }) => {
+// Fetch category data and posts for the page
+const fetchCategoryData = async (categorySlug: string) => {
+  const categoryQuery = `*[_type == "category" && slug.current == $categorySlug][0]{
+    _id,
+    title
+  }`;
+
+  const categoryData: Category | null = await client.fetch(categoryQuery, { categorySlug });
+
+  if (!categoryData) return null;
+
+  const categoryId = categoryData._id;
+
+  // Query to fetch posts belonging to the category
+  const postsQuery = `*[_type == "post" && $categoryId in categories[]._ref]{
+    title,
+    slug,
+    description,
+    publishedAt
+  }`;
+
+  const posts: Post[] = await client.fetch(postsQuery, { categoryId });
+
+  return { categoryData, posts };
+};
+
+const CategoryPage = async ({ params }: { params: { category: string } }) => {
+  const { category: categorySlug } = params;
+  const { categoryData, posts } = await fetchCategoryData(categorySlug);
+
   if (!categoryData) {
     return (
       <section className="py-16 bg-gray-100">
@@ -52,47 +81,6 @@ const CategoryPage = ({ categoryData, posts }: { categoryData: Category | null, 
       </div>
     </section>
   );
-};
-
-// Fetch category data and posts for the page
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const categorySlug = params?.category as string;
-
-  // Query to fetch the category by slug
-  const categoryQuery = `*[_type == "category" && slug.current == $categorySlug][0]{
-    _id,
-    title
-  }`;
-
-  const categoryData: Category | null = await client.fetch(categoryQuery, { categorySlug });
-
-  if (!categoryData) {
-    return {
-      props: {
-        categoryData: null,
-        posts: [],
-      },
-    };
-  }
-
-  const categoryId = categoryData._id;
-
-  // Query to fetch posts belonging to the category
-  const postsQuery = `*[_type == "post" && $categoryId in categories[]._ref]{
-    title,
-    slug,
-    description,
-    publishedAt
-  }`;
-
-  const posts: Post[] = await client.fetch(postsQuery, { categoryId });
-
-  return {
-    props: {
-      categoryData,
-      posts,
-    },
-  };
 };
 
 export default CategoryPage;
