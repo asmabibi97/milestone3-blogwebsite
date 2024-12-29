@@ -1,6 +1,11 @@
 import { client } from '../../sanity/lib/client';
 import Link from 'next/link';
 
+interface Category {
+  title: string;
+  description: string;
+}
+
 const CategorySection = async () => {
   // Query to fetch categories from Sanity
   const query = `*[_type == "category"]{
@@ -8,14 +13,14 @@ const CategorySection = async () => {
     description
   }`;
 
-  const categories = await client.fetch(query);
+  const categories: Category[] = await client.fetch(query);
 
   return (
     <section className="py-16 bg-gray-100">
       <div className="container mx-auto text-center">
         <h2 className="text-4xl font-semibold mb-12">Explore Our Categories</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-          {categories.map((category: any) => (
+          {categories.map((category) => (
             <div
               key={category.title}
               className="bg-white p-6 rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl"

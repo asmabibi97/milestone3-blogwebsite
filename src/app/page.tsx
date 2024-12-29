@@ -1,11 +1,30 @@
-import { fetchPosts } from '../sanity/lib/fetchposts'; 
+import { fetchPosts } from '../sanity/lib/fetchposts';
 import Link from 'next/link';
+import Image from 'next/image';
 
 import Herosection from './Component/Herosection';
 import CategorySection from './Component/CategorySection';
 
+interface Post {
+  _id: string;
+  title: string;
+  slug: {
+    current: string;
+  };
+  mainImage: {
+    asset: {
+      url: string;
+    };
+  };
+  body: Array<{
+    children: Array<{
+      text: string;
+    }>;
+  }>;
+}
+
 export default async function Home() {
-  const posts = await fetchPosts();
+  const posts: Post[] = await fetchPosts();  // Ensure fetchPosts returns the correct type
   console.log(posts);
 
   return (
@@ -15,7 +34,7 @@ export default async function Home() {
       <main className="container mx-auto px-4 py-8">
         <h2 className="text-4xl font-semibold text-center mb-10">Latest Posts</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post: any) => (
+          {posts.map((post) => (
             <div
               key={post._id}
               className="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out flex flex-col"
@@ -23,8 +42,10 @@ export default async function Home() {
               {/* Post Image */}
               {post.mainImage && (
                 <div className="overflow-hidden rounded-lg mb-6">
-                  <img
+                  <Image
                     src={post.mainImage.asset.url}
+                    width={200}
+                    height={200}
                     alt={post.title}
                     className="w-full h-48 object-cover transform hover:scale-105 transition-transform duration-500"
                   />

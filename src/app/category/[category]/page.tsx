@@ -1,6 +1,20 @@
 import { client } from '../../../sanity/lib/client';
 import Link from 'next/link';
 
+interface Category {
+  _id: string;
+  title: string;
+}
+
+interface Post {
+  title: string;
+  slug: {
+    current: string;
+  };
+  description?: string;
+  publishedAt?: string;
+}
+
 const CategoryPage = async ({ params }: { params: { category: string } }) => {
   const categorySlug = params.category;
 
@@ -10,7 +24,7 @@ const CategoryPage = async ({ params }: { params: { category: string } }) => {
     title
   }`;
 
-  const categoryData = await client.fetch(categoryQuery, { categorySlug });
+  const categoryData: Category | null = await client.fetch(categoryQuery, { categorySlug });
 
   if (!categoryData) {
     return (
@@ -32,7 +46,7 @@ const CategoryPage = async ({ params }: { params: { category: string } }) => {
     publishedAt
   }`;
 
-  const posts = await client.fetch(postsQuery, { categoryId });
+  const posts: Post[] = await client.fetch(postsQuery, { categoryId });
 
   return (
     <section className="py-16 bg-gray-100">
@@ -40,7 +54,7 @@ const CategoryPage = async ({ params }: { params: { category: string } }) => {
         <h2 className="text-4xl font-semibold mb-12">Posts in {categoryData.title}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
           {posts.length > 0 ? (
-            posts.map((post: any) => (
+            posts.map((post) => (
               <div key={post.slug.current} className="bg-white p-6 rounded-lg shadow-lg">
                 <h3 className="text-2xl font-semibold text-gray-800 mb-4">{post.title}</h3>
                 <p className="text-gray-600 mb-6">{post.description}</p>

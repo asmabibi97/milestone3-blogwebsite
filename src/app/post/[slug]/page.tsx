@@ -1,12 +1,41 @@
 import { PortableText } from '@portabletext/react';
 import { client } from '../../../sanity/lib/client';
 import Sidebar from '../../Component/Sidebar';
-import CommentSection from '../../Component/CommentSection'; // Import the CommentSection component
+import CommentSection from '../../Component/CommentSection';
+import Image from 'next/image';
+
+// Define types for the author, category, and body (rich text) of the post
+interface Author {
+  name: string;
+  image: string;
+}
+
+interface Category {
+  title: string;
+}
+
+interface BodyText {
+  _key: string;
+  _type: string;
+  children: Array<{
+    _key: string;
+    _type: string;
+    text: string;
+  }>;
+}
+
+interface Post {
+  title: string;
+  body: BodyText[]; // Array of body text blocks (rich text)
+  publishedAt: string;
+  author: Author | null;
+  categories: Category[];
+}
 
 const BlogPage = async ({ params }: { params: { slug: string } }) => {
   const slug = params.slug;
 
-  // Fetch the blog post data
+  // Query to fetch the blog post data with types
   const postQuery = `*[_type == "post" && slug.current == $slug][0]{
     title,
     body,
@@ -20,7 +49,7 @@ const BlogPage = async ({ params }: { params: { slug: string } }) => {
     }
   }`;
 
-  const post = await client.fetch(postQuery, { slug });
+  const post: Post | null = await client.fetch(postQuery, { slug });
 
   if (!post) {
     return (
@@ -44,8 +73,10 @@ const BlogPage = async ({ params }: { params: { slug: string } }) => {
               {post.author && (
                 <div className="flex items-center gap-2">
                   {post.author.image && (
-                    <img
+                    <Image
                       src={post.author.image}
+                      width={200}
+                      height={200}
                       alt={post.author.name}
                       className="w-8 h-8 rounded-full object-cover"
                     />
@@ -55,7 +86,7 @@ const BlogPage = async ({ params }: { params: { slug: string } }) => {
               )}
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
-              {post.categories.map((category: any) => (
+              {post.categories.map((category) => (
                 <span
                   key={category.title}
                   className="bg-teal-100 text-teal-700 text-sm py-1 px-3 rounded-full"

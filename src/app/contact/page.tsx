@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import React, { useState } from 'react';
@@ -11,7 +9,7 @@ const ContactPage = () => {
     message: '',
   });
 
-  const [formStatus, setFormStatus] = useState<string | null>(null);
+  const [formStatus, setFormStatus] = useState<'success' | 'error' | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -24,7 +22,6 @@ const ContactPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-  
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -49,7 +46,7 @@ const ContactPage = () => {
       <div className="container mx-auto px-4">
         <h1 className="text-5xl font-bold text-teal-700 text-center mb-6">Contact Us</h1>
         <p className="text-lg text-gray-600 text-center mb-12">
-          Have questions or feedback? We'd love to hear from you. Use the form below to get in touch.
+          Have questions or feedback? We&apos;d love to hear from you. Use the form below to get in touch.
         </p>
         <form
           onSubmit={handleSubmit}
