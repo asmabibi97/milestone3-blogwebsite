@@ -62,12 +62,12 @@ export default function Navbar() {
           </Link>
         </nav>
         <div className="flex text-black flex-row space-x-3 text-lg justify-center items-center p-4">
-            <a href="/">
-            <FaFacebook /> </a>
-            <a href="/"> <FaInstagram />
-            </a>
-            <a href="/"> <FaLinkedinIn />
-            </a>
+            <Link href="#">
+            <FaFacebook /> </Link>
+            <Link href="#"> <FaInstagram />
+            </Link>
+            <Link href="#"> <FaLinkedinIn />
+            </Link>
         </div>
       </div>
     </header>
