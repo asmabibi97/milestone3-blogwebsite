@@ -16,8 +16,14 @@ interface Post {
   publishedAt?: string;
 }
 
+// Interface for the fetched data
+interface CategoryPageData {
+  categoryData: Category | null;
+  posts: Post[];
+}
+
 // Fetch category data and posts for the page
-const fetchCategoryData = async (categorySlug: string) => {
+const fetchCategoryData = async (categorySlug: string): Promise<CategoryPageData> => {
   const categoryQuery = `*[_type == "category" && slug.current == $categorySlug][0]{
     _id,
     title
@@ -25,7 +31,9 @@ const fetchCategoryData = async (categorySlug: string) => {
 
   const categoryData: Category | null = await client.fetch(categoryQuery, { categorySlug });
 
-  if (!categoryData) return null;
+  if (!categoryData) {
+    return { categoryData: null, posts: [] };
+  }
 
   const categoryId = categoryData._id;
 
@@ -42,7 +50,13 @@ const fetchCategoryData = async (categorySlug: string) => {
   return { categoryData, posts };
 };
 
-const CategoryPage = async ({ params }: { params: { category: string } }) => {
+interface CategoryPageProps {
+  params: {
+    category: string;
+  };
+}
+
+const CategoryPage = async ({ params }: CategoryPageProps) => {
   const { category: categorySlug } = params;
   const { categoryData, posts } = await fetchCategoryData(categorySlug);
 
