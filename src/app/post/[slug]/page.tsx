@@ -3,6 +3,7 @@ import { client } from '../../../sanity/lib/client';
 import Sidebar from '../../Component/Sidebar';
 import CommentSection from '../../Component/CommentSection';
 import Image from 'next/image';
+import { Metadata } from 'next';
 
 // Define types for the author, category, and body (rich text) of the post
 interface Author {
@@ -32,8 +33,17 @@ interface Post {
   categories: Category[];
 }
 
+export async function generateStaticParams() {
+  const query = `*[_type == "post"]{ "slug": slug.current }`;
+  const slugs: { slug: string }[] = await client.fetch(query);
+
+  return slugs.map(({ slug }) => ({
+    slug,
+  }));
+}
+
 const BlogPage = async ({ params }: { params: { slug: string } }) => {
-  const slug = params.slug;
+  const { slug } = params;
 
   // Query to fetch the blog post data with types
   const postQuery = `*[_type == "post" && slug.current == $slug][0]{
@@ -111,6 +121,11 @@ const BlogPage = async ({ params }: { params: { slug: string } }) => {
       </div>
     </section>
   );
+};
+
+export const metadata: Metadata = {
+  title: 'Blog Post',
+  description: 'Read an interesting blog post.',
 };
 
 export default BlogPage;
