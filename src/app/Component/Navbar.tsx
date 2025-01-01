@@ -30,12 +30,12 @@ export default function Navbar() {
 
   return (
     <header className="text-gray-400 body-font shadow-lg bg-gray-100">
-      <div className="container mx-auto flex  flex-row  justify-around items-center p-4 gap-5">
+      <div className="container mx-auto flex  md:flex-row  flex-col justify-around items-center p-4 gap-5">
         <div className="flex-1 text-black">
           <span>{currentdatetime}</span>
         </div>
 
-        <nav className="flex gap-6 items-center justify-center text-black font-semibold">
+        <nav className="flex  gap-6 items-center justify-center text-black font-semibold">
           <Link
             href="/"
             className="hover:text-blue-500 transition-colors duration-300 transform hover:scale-105"
@@ -61,6 +61,14 @@ export default function Navbar() {
             Contact
           </Link>
         </nav>
+       
+          
+          
+          
+          
+          
+          
+          
         <div className="flex text-black flex-row space-x-3 text-lg justify-center items-center p-4">
             <Link href="#">
             <FaFacebook /> </Link>

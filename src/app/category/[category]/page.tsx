@@ -22,7 +22,7 @@ interface CategoryPageProps {
   };
 }
 
-// Fetch data function
+// Function to fetch category and posts data
 const fetchCategoryData = async (categorySlug: string) => {
   const categoryQuery = `*[_type == "category" && slug.current == $categorySlug][0]{
     _id,
@@ -37,7 +37,6 @@ const fetchCategoryData = async (categorySlug: string) => {
 
   const categoryId = categoryData._id;
 
-  // Query to fetch posts belonging to the category
   const postsQuery = `*[_type == "post" && $categoryId in categories[]._ref]{
     title,
     slug,
@@ -52,6 +51,8 @@ const fetchCategoryData = async (categorySlug: string) => {
 
 const CategoryPage = async ({ params }: CategoryPageProps) => {
   const { category: categorySlug } = params;
+
+  // Fetch category and posts data
   const { categoryData, posts } = await fetchCategoryData(categorySlug);
 
   if (!categoryData) {
