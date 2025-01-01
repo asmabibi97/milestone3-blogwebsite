@@ -16,7 +16,7 @@ interface Post {
 }
 
 interface CategoryPageProps {
-  params: { category: string }; // Fixed type
+  params: { category: string }; // Simple object
 }
 
 const fetchCategoryData = async (categorySlug: string) => {
@@ -53,6 +53,7 @@ export async function generateStaticParams() {
 }
 
 const CategoryPage = async ({ params }: CategoryPageProps) => {
+  // Destructure params directly
   const { category: categorySlug } = params;
 
   const { categoryData, posts } = await fetchCategoryData(categorySlug);
