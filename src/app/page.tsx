@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import Herosection from './Component/Herosection';
-import CategorySection from './Component/CategorySection';
+
 
 interface Post {
   _id: string;
@@ -75,7 +75,7 @@ export default async function Home() {
           ))}
         </div>
       </main>
-      <CategorySection />
+      
     </div>
   );
 }
