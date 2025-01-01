@@ -16,9 +16,7 @@ interface Post {
 }
 
 interface CategoryPageProps {
-  params: {
-    category: string;
-  };
+  params: Promise<{ category: string }>;
 }
 
 const fetchCategoryData = async (categorySlug: string) => {
@@ -55,7 +53,8 @@ export async function generateStaticParams() {
 }
 
 const CategoryPage = async ({ params }: CategoryPageProps) => {
-  const { category: categorySlug } = params;
+  const resolvedParams = await params; // Resolve the promise
+  const { category: categorySlug } = resolvedParams;
 
   const { categoryData, posts } = await fetchCategoryData(categorySlug);
 
