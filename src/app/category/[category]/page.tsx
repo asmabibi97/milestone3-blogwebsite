@@ -16,7 +16,7 @@ interface Post {
 }
 
 interface CategoryPageProps {
-  params: { category: string }; // No Promise here
+  params: { category: string }; // Fixed type
 }
 
 const fetchCategoryData = async (categorySlug: string) => {
