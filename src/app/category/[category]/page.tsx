@@ -1,4 +1,3 @@
-// src/app/category/[category]/page.tsx
 import { client } from '../../../sanity/lib/client';
 import Link from 'next/link';
 
@@ -12,8 +11,8 @@ interface Post {
   slug: {
     current: string;
   };
-  description?: string;
-  publishedAt?: string;
+  description?: string | null;
+  publishedAt?: string | null;
 }
 
 interface CategoryPageProps {
@@ -22,7 +21,6 @@ interface CategoryPageProps {
   };
 }
 
-// Function to fetch category and posts data
 const fetchCategoryData = async (categorySlug: string) => {
   const categoryQuery = `*[_type == "category" && slug.current == $categorySlug][0]{
     _id,
@@ -49,10 +47,16 @@ const fetchCategoryData = async (categorySlug: string) => {
   return { categoryData, posts };
 };
 
+export async function generateStaticParams() {
+  const categories = await client.fetch(`*[_type == "category"]{slug}`);
+  return categories.map((category: { slug: { current: string } }) => ({
+    category: category.slug.current,
+  }));
+}
+
 const CategoryPage = async ({ params }: CategoryPageProps) => {
   const { category: categorySlug } = params;
 
-  // Fetch category and posts data
   const { categoryData, posts } = await fetchCategoryData(categorySlug);
 
   if (!categoryData) {
