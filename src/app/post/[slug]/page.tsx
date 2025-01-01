@@ -27,12 +27,32 @@ interface BodyText {
 
 interface Post {
   title: string;
-  body: BodyText[]; // Array of body text blocks (rich text)
+  body: BodyText[];
   publishedAt: string;
   author: Author | null;
   categories: Category[];
 }
 
+// Generate metadata dynamically
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const postQuery = `*[_type == "post" && slug.current == $slug][0]{
+    title
+  }`;
+
+  const post = await client.fetch(postQuery, { slug: params.slug });
+
+  if (!post) {
+    return {
+      title: 'Post Not Found',
+    };
+  }
+
+  return {
+    title: post.title,
+  };
+}
+
+// Generate static params for dynamic routes
 export async function generateStaticParams() {
   const query = `*[_type == "post"]{ "slug": slug.current }`;
   const slugs: { slug: string }[] = await client.fetch(query);
@@ -45,7 +65,6 @@ export async function generateStaticParams() {
 const BlogPage = async ({ params }: { params: { slug: string } }) => {
   const { slug } = params;
 
-  // Query to fetch the blog post data with types
   const postQuery = `*[_type == "post" && slug.current == $slug][0]{
     title,
     body,
@@ -74,7 +93,6 @@ const BlogPage = async ({ params }: { params: { slug: string } }) => {
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto flex flex-col lg:flex-row gap-12">
-        {/* Blog Content */}
         <article className="w-full lg:w-3/4 bg-white p-8 rounded-lg shadow-md">
           <header className="mb-8">
             <h1 className="text-5xl font-bold text-teal-700 mb-4">{post.title}</h1>
@@ -111,21 +129,14 @@ const BlogPage = async ({ params }: { params: { slug: string } }) => {
           </div>
         </article>
 
-        {/* Sidebar */}
         <Sidebar />
       </div>
 
-      {/* Comment Section */}
       <div className="mt-12">
         <CommentSection />
       </div>
     </section>
   );
-};
-
-export const metadata: Metadata = {
-  title: 'Blog Post',
-  description: 'Read an interesting blog post.',
 };
 
 export default BlogPage;
