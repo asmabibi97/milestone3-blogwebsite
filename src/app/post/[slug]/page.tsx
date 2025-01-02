@@ -32,7 +32,13 @@ interface Post {
   categories: Category[];
 }
 
-// This function fetches the static parameters (slugs) for dynamic routing
+// Ensure the type for params matches the expected structure
+interface BlogPageProps {
+  params: {
+    slug: string;
+  };
+}
+
 export async function generateStaticParams() {
   const query = `*[_type == "post"]{ "slug": slug.current }`;
   const slugs: { slug: string }[] = await client.fetch(query);
@@ -43,7 +49,7 @@ export async function generateStaticParams() {
 }
 
 // Main Blog Page Component
-const BlogPage = async ({ params }: { params: { slug: string } }) => {
+const BlogPage = async ({ params }: BlogPageProps) => {
   const { slug } = params;
 
   // Query to fetch the blog post data with types
