@@ -32,13 +32,14 @@ interface Post {
   categories: Category[];
 }
 
-// Ensure the type for params matches the expected structure
+// Fix the type for params to match Next.js dynamic route structure
 interface BlogPageProps {
   params: {
     slug: string;
   };
 }
 
+// This function fetches slugs for static generation
 export async function generateStaticParams() {
   const query = `*[_type == "post"]{ "slug": slug.current }`;
   const slugs: { slug: string }[] = await client.fetch(query);
