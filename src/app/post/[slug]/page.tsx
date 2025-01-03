@@ -4,6 +4,9 @@ import Sidebar from '../../Component/Sidebar';
 import CommentSection from '../../Component/CommentSection';
 import Image from 'next/image';
 
+// Import the type for PortableText blocks directly from @portabletext/react
+import { PortableTextBlock } from '@portabletext/react';
+
 // Define types for the post, author, and category
 interface Author {
   name: string;
@@ -16,7 +19,7 @@ interface Category {
 
 interface Post {
   title: string;
-  body: any; // The body can be rich text, so `any` is used here. You can refine it further based on your Sanity setup.
+  body: PortableTextBlock[]; // Use PortableTextBlock[] for the body
   publishedAt: string;
   author: Author | null;
   categories: Category[];
