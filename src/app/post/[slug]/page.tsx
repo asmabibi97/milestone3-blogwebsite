@@ -2,9 +2,8 @@ import { PortableText } from '@portabletext/react';
 import { client } from '../../../sanity/lib/client';
 import Sidebar from '../../Component/Sidebar';
 import CommentSection from '../../Component/CommentSection';
-import Image from 'next/image';
 
-// Define types for the author, category, and body (rich text) of the post
+// Define types for the post, author, and category
 interface Author {
   name: string;
   image: string;
@@ -14,46 +13,18 @@ interface Category {
   title: string;
 }
 
-interface BodyText {
-  _key: string;
-  _type: string;
-  children: Array<{
-    _key: string;
-    _type: string;
-    text: string;
-  }>;
-}
-
 interface Post {
   title: string;
-  body: BodyText[]; // Array of body text blocks (rich text)
+  body: any; // The body can be rich text, so `any` is used here. You can refine it further based on your Sanity setup.
   publishedAt: string;
   author: Author | null;
   categories: Category[];
 }
 
-// Fix the type for params to match Next.js dynamic route structure
-interface BlogPageProps {
-  params: {
-    slug: string;
-  };
-}
+const BlogPage = async ({ params }: { params: { slug: string } }) => {
+  const slug = params.slug;
 
-// This function fetches slugs for static generation
-export async function generateStaticParams() {
-  const query = `*[_type == "post"]{ "slug": slug.current }`;
-  const slugs: { slug: string }[] = await client.fetch(query);
-
-  return slugs.map(({ slug }) => ({
-    slug,
-  }));
-}
-
-// Main Blog Page Component
-const BlogPage = async ({ params }: BlogPageProps) => {
-  const { slug } = params;
-
-  // Query to fetch the blog post data with types
+  // Fetch the blog post data with the correct types
   const postQuery = `*[_type == "post" && slug.current == $slug][0]{
     title,
     body,
@@ -91,10 +62,8 @@ const BlogPage = async ({ params }: BlogPageProps) => {
               {post.author && (
                 <div className="flex items-center gap-2">
                   {post.author.image && (
-                    <Image
+                    <img
                       src={post.author.image}
-                      width={200}
-                      height={200}
                       alt={post.author.name}
                       className="w-8 h-8 rounded-full object-cover"
                     />
