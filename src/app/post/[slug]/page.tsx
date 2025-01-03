@@ -1,16 +1,8 @@
 import { PortableText } from '@portabletext/react';
 import { client } from '../../../sanity/lib/client';
+import Image from 'next/image';
 import Sidebar from '../../Component/Sidebar';
 import CommentSection from '../../Component/CommentSection';
-import Image from 'next/image';
-import { PortableTextBlock } from '@portabletext/react';
-
-
-// Define types for the post, author, and category
-interface Author {
-  name: string;
-  image: string;
-}
 
 interface Category {
   title: string;
@@ -18,21 +10,25 @@ interface Category {
 
 interface Post {
   title: string;
-  body: PortableTextBlock[]; // Use PortableTextBlock[] for the body
+  body: any; // You can change this type based on the actual structure of the post content
   publishedAt: string;
-  author: Author | null;
+  author: {
+    name: string;
+    image: string;
+  };
   categories: Category[];
 }
 
-// Correct typing for the params
-interface Params {
-  slug: string;
+export interface PageProps {
+  params: {
+    slug: string;
+  };
 }
 
-const BlogPage = async ({ params }: { params: Params }) => {
+const BlogPage = async ({ params }: PageProps) => {
   const { slug } = params;
 
-  // Fetch the blog post data with the correct types
+  // Fetch the blog post data
   const postQuery = `*[_type == "post" && slug.current == $slug][0]{
     title,
     body,
@@ -83,7 +79,8 @@ const BlogPage = async ({ params }: { params: Params }) => {
               )}
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
-              {post.categories.map((category) => (
+              {/* Type the 'category' parameter */}
+              {post.categories.map((category: Category) => (
                 <span
                   key={category.title}
                   className="bg-teal-100 text-teal-700 text-sm py-1 px-3 rounded-full"
