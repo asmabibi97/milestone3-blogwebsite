@@ -3,9 +3,8 @@ import { client } from '../../../sanity/lib/client';
 import Sidebar from '../../Component/Sidebar';
 import CommentSection from '../../Component/CommentSection';
 import Image from 'next/image';
-
-// Import the type for PortableText blocks directly from @portabletext/react
 import { PortableTextBlock } from '@portabletext/react';
+
 
 // Define types for the post, author, and category
 interface Author {
@@ -25,8 +24,13 @@ interface Post {
   categories: Category[];
 }
 
-const BlogPage = async ({ params }: { params: { slug: string } }) => {
-  const slug = params.slug;
+// Correct typing for the params
+interface Params {
+  slug: string;
+}
+
+const BlogPage = async ({ params }: { params: Params }) => {
+  const { slug } = params;
 
   // Fetch the blog post data with the correct types
   const postQuery = `*[_type == "post" && slug.current == $slug][0]{
