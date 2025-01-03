@@ -2,6 +2,7 @@ import { PortableText } from '@portabletext/react';
 import { client } from '../../../sanity/lib/client';
 import Sidebar from '../../Component/Sidebar';
 import CommentSection from '../../Component/CommentSection';
+import Image from 'next/image';
 
 // Define types for the post, author, and category
 interface Author {
@@ -62,8 +63,10 @@ const BlogPage = async ({ params }: { params: { slug: string } }) => {
               {post.author && (
                 <div className="flex items-center gap-2">
                   {post.author.image && (
-                    <img
+                    <Image
                       src={post.author.image}
+                      width={300}
+                      height={300}
                       alt={post.author.name}
                       className="w-8 h-8 rounded-full object-cover"
                     />
