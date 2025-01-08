@@ -50,49 +50,47 @@ export default async function BlogPage({ params }: { params: { slug: string } })
 
   return (
     <div>
-    <main className="min-h-screen bg-gray-50 py-12 flex flex-col lg:flex-row gap-12">
-      <article className="mx-auto max-w-2xl bg-white rounded-xl shadow p-6">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">{post.title}</h1>
-          <div className="flex items-center gap-3">
-            <Image
-              src={post.author.avatar}
-              width={32}
-              height={32}
-              alt={post.author.name}
-              className="rounded-full"
-            />
-            <div className="text-sm text-gray-600">
-              <p>{post.author.name}</p>
-              <time>
-                {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </time>
+      <main className="min-h-screen bg-gray-50 py-12 flex flex-col lg:flex-row gap-12">
+        <article className="mx-auto max-w-2xl bg-white rounded-xl shadow p-6">
+          <header className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">{post.title}</h1>
+            <div className="flex items-center gap-3">
+              <Image
+                src={post.author.avatar}
+                width={32}
+                height={32}
+                alt={post.author.name}
+                className="rounded-full"
+              />
+              <div className="text-sm text-gray-600">
+                <p>{post.author.name}</p>
+                <time>
+                  {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </time>
+              </div>
             </div>
+            <div className="flex flex-wrap gap-2 mt-4">
+              {post.categories.map((category: { title: string }) => (
+                <span
+                  key={category.title}
+                  className="bg-teal-100 text-teal-700 text-sm py-1 px-3 rounded-full"
+                >
+                  {category.title}
+                </span>
+              ))}
+            </div>
+          </header>
+          <div className="prose max-w-none">
+            <PortableText value={post.content} />
           </div>
-          <div className="flex flex-wrap gap-2 mt-4">
-            {post.categories.map((category: { title: string }) => (
-              <span
-                key={category.title}
-                className="bg-teal-100 text-teal-700 text-sm py-1 px-3 rounded-full"
-              >
-                {category.title}
-              </span>
-            ))}
-          </div>
-        </header>
-        <div className="prose max-w-none">
-          <PortableText value={post.content} />
-        </div>
-      </article>
-      <Sidebar/>
-      
-    </main>
-    <CommentSection/>
+        </article>
+        <Sidebar />
+      </main>
+      <CommentSection />
     </div>
-    
   );
 }
